@@ -24,7 +24,7 @@ namespace AdventureWorks.Controllers
             var adventureWorks2016Context = _context.Products.Include(p => p.ProductModel).Include(p => p.ProductSubcategory).Include(p => p.SizeUnitMeasureCodeNavigation).Include(p => p.WeightUnitMeasureCodeNavigation);
             var Consulta1 = adventureWorks2016Context.Where(x=> x.Color=="Red" || x.Color =="Green" && x.ListPrice >1).OrderBy(x=>x.SafetyStockLevel);
             var Consulta2 = adventureWorks2016Context.Where(x=> x.Color == "Red" && x.ProductSubcategoryId != 2 && !x.Name.EndsWith("x") && !x.Name.EndsWith("a") && !x.Name.EndsWith("e") && !x.Name.EndsWith("i") && !x.Name.EndsWith("o") && !x.Name.EndsWith("u")).OrderBy(x=>x.Name);
-            var Consulta3 = adventureWorks2016Context.Where(x=>x.Name.StartsWith("a") || x.Name.StartsWith("b") || x.Name.StartsWith("c") || x.Name.Contains("e")).OrderBy(x=>x.SellStartDate).ThenBy(x=>x.Color);
+            var Consulta3 = adventureWorks2016Context.Where(x=>x.Name.StartsWith("A") || x.Name.StartsWith("B") || x.Name.StartsWith("C") || x.Name.Contains("e")).OrderBy(x=>x.SellStartDate).ThenBy(x=>x.Color);
             return View(await Consulta3.ToListAsync());
         }
 
