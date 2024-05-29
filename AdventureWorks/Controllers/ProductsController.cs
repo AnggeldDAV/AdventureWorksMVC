@@ -27,7 +27,7 @@ namespace AdventureWorks.Controllers
         {
             var adventureWorks2016Context = _context.Products.Include(p => p.ProductModel).Include(p => p.ProductSubcategory).Include(p => p.SizeUnitMeasureCodeNavigation).Include(p => p.WeightUnitMeasureCodeNavigation);
 
-            if (consulta == null) return View(await adventureWorks2016Context.AsNoTracking().ToListAsync());
+            if (consulta == null) return View(await adventureWorks2016Context.ToListAsync());
 
             var Consulta1 = adventureWorks2016Context.
                 Where(x => x.Color == "Red" || x.Color == "Green" && x.ListPrice > 1).
@@ -47,7 +47,7 @@ namespace AdventureWorks.Controllers
                 case "consulta1": return View(await Consulta1.ToListAsync());
                 case "consulta2": return View(await Consulta2.ToListAsync());
                 case "consulta3": return View(await Consulta3.ToListAsync());
-                default: return View(await adventureWorks2016Context.AsNoTracking().ToListAsync());
+                default: return View(await adventureWorks2016Context.ToListAsync());
             }
         }
 
