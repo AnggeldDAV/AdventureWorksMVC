@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AdventureWorks.Models;
 using Microsoft.Data.SqlClient;
+using AdventureWorks.Services;
 
 namespace AdventureWorks.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly AdventureWorks2016Context _context;
+        private readonly IFactoriaEspecificaciones _factoria;
 
-        public ProductsController(AdventureWorks2016Context context)
+        public ProductsController(AdventureWorks2016Context context,IFactoriaEspecificaciones fabrica)
         {
             _context = context;
+            _factoria = fabrica;
         }
 
         // GET: Products
@@ -42,11 +46,18 @@ namespace AdventureWorks.Controllers
                 OrderBy(x => x.SellStartDate).
                 ThenBy(x => x.Color);
 
+            var FabricaConsultas = _factoria.dameInstancia(EnumeracionEjercicios.Ejercicio);
+            var consulta4 = (FabricaConsultas as IConsultaProducto).dameProductos(adventureWorks2016Context);
+            //var consulta4 =
+            //    adventureWorks2016Context.Where(x => x.Color == "Red" || x.Color == "Black" || x.Color == "Blue" && x.ListPrice >2 && x.Name.StartsWith("A") || x.Name.StartsWith("B") || x.Name.StartsWith("C")).
+            //        OrderBy(x=>x.Name);
+
             switch (consulta.ToLower())
             {
                 case "consulta1": return View(await consulta1.ToListAsync());
                 case "consulta2": return View(await consulta2.ToListAsync());
                 case "consulta3": return View(await consulta3.ToListAsync());
+                case "consulta4": return View(consulta4);
                 default: return View(await adventureWorks2016Context.ToListAsync());
             }
         }
