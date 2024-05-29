@@ -29,24 +29,24 @@ namespace AdventureWorks.Controllers
 
             if (consulta == null) return View(await adventureWorks2016Context.ToListAsync());
 
-            var Consulta1 = adventureWorks2016Context.
+            var consulta1 = adventureWorks2016Context.
                 Where(x => x.Color == "Red" || x.Color == "Green" && x.ListPrice > 1).
                 OrderBy(x => x.SafetyStockLevel);
 
-            var Consulta2 = adventureWorks2016Context.
+            var consulta2 = adventureWorks2016Context.
                 Where(x => x.Color == "Red" && x.ProductSubcategoryId != 2 && !x.Name.EndsWith("x") && !x.Name.EndsWith("a") && !x.Name.EndsWith("e") && !x.Name.EndsWith("i") && !x.Name.EndsWith("o") && !x.Name.EndsWith("u")).
                 OrderBy(x => x.Name);
 
-            var Consulta3 = adventureWorks2016Context.
+            var consulta3 = adventureWorks2016Context.
                 Where(x => x.Name.StartsWith("A") || x.Name.StartsWith("B") || x.Name.StartsWith("C") || x.Name.Contains("e")).
                 OrderBy(x => x.SellStartDate).
                 ThenBy(x => x.Color);
 
             switch (consulta.ToLower())
             {
-                case "consulta1": return View(await Consulta1.ToListAsync());
-                case "consulta2": return View(await Consulta2.ToListAsync());
-                case "consulta3": return View(await Consulta3.ToListAsync());
+                case "consulta1": return View(await consulta1.ToListAsync());
+                case "consulta2": return View(await consulta2.ToListAsync());
+                case "consulta3": return View(await consulta3.ToListAsync());
                 default: return View(await adventureWorks2016Context.ToListAsync());
             }
         }
