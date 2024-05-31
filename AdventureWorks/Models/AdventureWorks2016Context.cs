@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using AdventureWorks.ViewModel;
 
 namespace AdventureWorks.Models;
 
@@ -3250,4 +3251,6 @@ public partial class AdventureWorks2016Context : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<AdventureWorks.ViewModel.SalesOrderProductViewModel> SalesOrderProductViewModels { get; set; } = default!;
 }

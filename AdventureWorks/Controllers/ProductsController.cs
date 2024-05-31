@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using AdventureWorks.Models;
 using Microsoft.Data.SqlClient;
 using AdventureWorks.Services;
+using AdventureWorks.ViewModel;
 
 namespace AdventureWorks.Controllers
 {
@@ -62,6 +63,21 @@ namespace AdventureWorks.Controllers
             }
         }
 
+        public async Task<IActionResult> Compacto()
+        {
+            var resultado = from SaleOrd in _context.SalesOrderDetails
+                join Pro in _context.Products
+                    on SaleOrd.ProductId equals Pro.ProductId
+                select new SalesOrderProductViewModel()
+                {
+                    Id = SaleOrd.ProductId,
+                    NombreProducto = Pro.Name,
+                    ColorProducto = Pro.Color,
+                    PrecioUnitarioProducto = SaleOrd.UnitPrice
+                };
+            /*var consulta = resultado.Where(x=>x.O)*/;
+            return View(resultado);
+        }
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
