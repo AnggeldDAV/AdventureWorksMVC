@@ -18,65 +18,71 @@ namespace AdventureWorks.Controllers
         private readonly AdventureWorks2016Context _context;
         private readonly IFactoriaEspecificaciones _factoria;
 
-        public ProductsController(AdventureWorks2016Context context,IFactoriaEspecificaciones fabrica)
+        public ProductsController(AdventureWorks2016Context context, IFactoriaEspecificaciones fabrica)
         {
             _context = context;
             _factoria = fabrica;
         }
 
         // GET: Products
-
-        [Route("[controller]")]
-        [Route("[controller]/{consulta}")]
-        public async Task<IActionResult> Index(string? consulta)
+        public async Task<IActionResult> Index()
         {
             var adventureWorks2016Context = _context.Products.Include(p => p.ProductModel).Include(p => p.ProductSubcategory).Include(p => p.SizeUnitMeasureCodeNavigation).Include(p => p.WeightUnitMeasureCodeNavigation);
-
-            if (consulta == null) return View(await adventureWorks2016Context.ToListAsync());
-
+            return View(await adventureWorks2016Context.ToListAsync());
+        }
+        public async Task<IActionResult> IndexConsulta1()
+        {
+            var adventureWorks2016Context = _context.Products.Include(p => p.ProductModel).Include(p => p.ProductSubcategory).Include(p => p.SizeUnitMeasureCodeNavigation).Include(p => p.WeightUnitMeasureCodeNavigation);
             var consulta1 = adventureWorks2016Context.
-                Where(x => x.Color == "Red" || x.Color == "Green" && x.ListPrice > 1).
-                OrderBy(x => x.SafetyStockLevel);
-
+                            Where(x => x.Color == "Red" || x.Color == "Green" && x.ListPrice > 1).
+                            OrderBy(x => x.SafetyStockLevel);
+            return View(await consulta1.ToListAsync());
+        }
+        public async Task<IActionResult> IndexConsulta2()
+        {
+            var adventureWorks2016Context = _context.Products.Include(p => p.ProductModel).Include(p => p.ProductSubcategory).Include(p => p.SizeUnitMeasureCodeNavigation).Include(p => p.WeightUnitMeasureCodeNavigation);
             var consulta2 = adventureWorks2016Context.
                 Where(x => x.Color == "Red" && x.ProductSubcategoryId != 2 && !x.Name.EndsWith("x") && !x.Name.EndsWith("a") && !x.Name.EndsWith("e") && !x.Name.EndsWith("i") && !x.Name.EndsWith("o") && !x.Name.EndsWith("u")).
                 OrderBy(x => x.Name);
 
+            return View(await consulta2.ToListAsync());
+        }
+        public async Task<IActionResult> IndexConsulta3()
+        {
+            var adventureWorks2016Context = _context.Products.Include(p => p.ProductModel).Include(p => p.ProductSubcategory).Include(p => p.SizeUnitMeasureCodeNavigation).Include(p => p.WeightUnitMeasureCodeNavigation);
             var consulta3 = adventureWorks2016Context.
                 Where(x => x.Name.StartsWith("A") || x.Name.StartsWith("B") || x.Name.StartsWith("C") || x.Name.Contains("e")).
                 OrderBy(x => x.SellStartDate).
                 ThenBy(x => x.Color);
 
+            return View(await consulta3.ToListAsync());
+        }
+        public async Task<IActionResult> IndexConsulta4()
+        {
+            var adventureWorks2016Context = _context.Products.Include(p => p.ProductModel).Include(p => p.ProductSubcategory).Include(p => p.SizeUnitMeasureCodeNavigation).Include(p => p.WeightUnitMeasureCodeNavigation);
             var FabricaConsultas = _factoria.dameInstancia(EnumeracionEjercicios.Ejercicio);
             var consulta4 = (FabricaConsultas as IConsultaProducto).dameProductos(adventureWorks2016Context);
             //var consulta4 =
             //    adventureWorks2016Context.Where(x => x.Color == "Red" || x.Color == "Black" || x.Color == "Blue" && x.ListPrice >2 && x.Name.StartsWith("A") || x.Name.StartsWith("B") || x.Name.StartsWith("C")).
             //        OrderBy(x=>x.Name);
 
-            switch (consulta.ToLower())
-            {
-                case "consulta1": return View(await consulta1.ToListAsync());
-                case "consulta2": return View(await consulta2.ToListAsync());
-                case "consulta3": return View(await consulta3.ToListAsync());
-                case "consulta4": return View(consulta4);
-                default: return View(await adventureWorks2016Context.ToListAsync());
-            }
+            return View(consulta4);
         }
-
         public async Task<IActionResult> Compacto()
         {
             var resultado = from SaleOrd in _context.SalesOrderDetails
-                join Pro in _context.Products
-                    on SaleOrd.ProductId equals Pro.ProductId
-                select new SalesOrderProductViewModel()
-                {
-                    Id = SaleOrd.ProductId,
-                    NombreProducto = Pro.Name,
-                    ColorProducto = Pro.Color,
-                    PrecioUnitarioProducto = SaleOrd.UnitPrice
-                };
-            /*var consulta = resultado.Where(x=>x.O)*/;
-            return View(resultado);
+                            join Pro in _context.Products
+                                on SaleOrd.ProductId equals Pro.ProductId
+                            select new SalesOrderProductViewModel()
+                            {
+                                Id = SaleOrd.ProductId,
+                                NombreProducto = Pro.Name,
+                                ColorProducto = Pro.Color,
+                                PrecioUnitarioProducto = SaleOrd.UnitPrice,
+                                Cantidad = SaleOrd.OrderQty
+                            };
+            var consulta = resultado.Where(x=>x.Cantidad >2).OrderBy(x => x.NombreProducto).ThenBy(x => x.ColorProducto).Take(1000);
+            return View(await consulta.ToListAsync());
         }
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)

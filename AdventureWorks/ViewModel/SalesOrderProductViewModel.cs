@@ -6,6 +6,7 @@
         public string NombreProducto { get; set; }
         public string ColorProducto { get; set; }
         public decimal PrecioUnitarioProducto { get; set; }
+        public short Cantidad { get; set; }
     }
 }
 
