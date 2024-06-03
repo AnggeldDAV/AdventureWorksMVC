@@ -82,8 +82,11 @@ namespace AdventureWorks.Controllers
                                 Cantidad = SaleOrd.OrderQty
                             };
             var consulta = resultado.Where(x=>x.Cantidad >2).OrderBy(x => x.NombreProducto).ThenBy(x => x.ColorProducto).Take(1000);
-            //var consultaAgrupada = consulta.GroupBy(x=>x.ColorProducto);
-            return View(await consulta.ToListAsync());
+
+            var consultaAgrupada = resultado.GroupBy(x => x.ColorProducto).Select(x =>
+                new SalesOrderProductViewModel()
+                    {ColorProducto = x.Key, ListaAgrupada = new List<SalesOrderProductViewModel>(x.ToList())});
+            return View(await consultaAgrupada.ToListAsync());
         }
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
